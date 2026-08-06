@@ -1,0 +1,62 @@
+version: "3.8"
+
+# Full local stack: Redis + Sentinel gateway + 3 origin instances behind it.
+# Demonstrates the standalone gateway deployment mode (for non-Node
+# services -- these origin containers stand in for "any HTTP service").
+#
+#   docker compose -f docker/docker-compose.yml up --build
+
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  origin-1:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    command: ["node", "dummy-origin/server.js"]
+    environment:
+      PORT: 5001
+      INSTANCE_ID: "1"
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on: [redis]
+
+  origin-2:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    command: ["node", "dummy-origin/server.js"]
+    environment:
+      PORT: 5001
+      INSTANCE_ID: "2"
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on: [redis]
+
+  origin-3:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    command: ["node", "dummy-origin/server.js"]
+    environment:
+      PORT: 5001
+      INSTANCE_ID: "3"
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on: [redis]
+
+  gateway:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      PORT: 8080
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      UPSTREAMS: "http://origin-1:5001,http://origin-2:5001,http://origin-3:5001"
+    depends_on: [redis, origin-1, origin-2, origin-3]

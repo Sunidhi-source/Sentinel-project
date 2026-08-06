@@ -1,0 +1,49 @@
+{
+  "name": "sentinel-limiter",
+  "version": "1.0.0",
+  "description": "Distributed rate-limiting & API gateway middleware for Node.js, backed by atomic Redis Lua scripts. Correct under concurrent multi-instance load.",
+  "main": "src/index.js",
+  "type": "commonjs",
+  "bin": {
+    "sentinel-gateway": "./gateway/server.js"
+  },
+  "files": [
+    "src",
+    "gateway",
+    "README.md"
+  ],
+  "scripts": {
+    "start:origin": "node dummy-origin/server.js",
+    "start:gateway": "node gateway/server.js",
+    "start:dashboard": "node src/dashboard/server.js",
+    "loadtest": "node load-test/run.js",
+    "loadtest:multi-instance": "node load-test/multi-instance-proof.js",
+    "test": "node --test test/*.test.js"
+  },
+  "keywords": [
+    "rate-limit",
+    "rate-limiter",
+    "api-gateway",
+    "redis",
+    "middleware",
+    "express",
+    "distributed",
+    "token-bucket",
+    "sliding-window"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.19.2",
+    "ioredis": "^5.4.1",
+    "ws": "^8.18.0",
+    "http-proxy-middleware": "^3.0.0",
+    "js-yaml": "^4.1.0",
+    "prom-client": "^15.1.3"
+  },
+  "devDependencies": {
+    "autocannon": "^7.15.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

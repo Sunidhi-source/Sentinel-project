@@ -1,0 +1,26 @@
+{
+  "redisFailureMode": "fail-open",
+  "defaultScope": "ip",
+  "defaultAlgorithm": "token-bucket",
+  "ttlSeconds": 120,
+  "routes": {
+    "/api/search": {
+      "algorithm": "token-bucket",
+      "limit": 100,
+      "windowSeconds": 60,
+      "scope": "apiKey"
+    },
+    "/api/upload": {
+      "algorithm": "sliding-window-counter",
+      "limit": 10,
+      "windowSeconds": 3600,
+      "scope": "userId"
+    },
+    "/api/precise": {
+      "algorithm": "sliding-window-log",
+      "limit": 10,
+      "windowSeconds": 10,
+      "scope": "ip"
+    }
+  }
+}
