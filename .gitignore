@@ -1,0 +1,52 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Package manager artifacts
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.npm
+
+# Env / secrets
+.env
+.env.local
+.env.*.local
+*.pem
+
+# Build / coverage output
+dist/
+build/
+coverage/
+.nyc_output/
+
+# Logs
+logs/
+*.log
+
+# Load-test / benchmark output
+load-test/results/
+load-test/*.json
+!examples/sentinel.config.json
+
+# Redis / docker local data
+docker/data/
+redis-data/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Runtime
+pids/
+*.pid
+*.seed
+*.pid.lock
