@@ -41,6 +41,8 @@ class SentinelRedis {
     this.client.on('error', (err) => {
       this.available = false;
       this.lastError = err;
+      // eslint-disable-next-line no-console
+      console.error('[sentinel] Redis connection error:', err && err.message ? err.message : err);
     });
     this.client.on('ready', () => {
       this.available = true;
