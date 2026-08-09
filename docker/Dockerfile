@@ -8,7 +8,6 @@ COPY src ./src
 COPY gateway ./gateway
 COPY examples ./examples
 
-ENV PORT=8080
-EXPOSE 8080
+EXPOSE 4000
 
-CMD ["node", "gateway/server.js"]
+CMD ["node", "src/dashboard/server.js"]
