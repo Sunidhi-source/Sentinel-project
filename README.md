@@ -18,7 +18,29 @@ it actually works under real concurrent, multi-process load.
 
 ---
 
-## Why this exists
+## 🔴 Live demo
+
+**[sentinel-project-ngmp.onrender.com/sentinel/dashboard](https://sentinel-project-ngmp.onrender.com/sentinel/dashboard)**
+
+Deployed on Render (free tier) with Redis Cloud as the backing store.
+Dashboard is behind HTTP Basic Auth — ask the repo owner for credentials.
+
+> Free-tier note: the instance spins down after inactivity, so the first
+> request after a while can take ~30–50s to wake up. That's a Render free
+> plan characteristic, not a bug in Sentinel.
+
+### Screenshots
+
+![Dashboard showing live throttling](docs/screenshots/dashboard-live.png)
+*Dashboard mid-test: 25 requests sent to `/api/search` (limit: 20/10s),
+2 throttled — allowed (green) and throttled (orange) lines both moving
+live via the WebSocket stream.*
+
+![Rate limit headers on an individual response](docs/screenshots/rate-limit-headers.png)
+*A single response showing the `X-RateLimit-Limit` / `X-RateLimit-Remaining`
+/ `X-Sentinel-Algorithm` headers Sentinel attaches to every request.*
+
+
 
 Most hand-rolled rate limiters do this:
 
@@ -192,6 +214,7 @@ expected throughput for a number worth putting on a resume.
 
 ```bash
 npm install
+cp .env.example .env    # then fill in REDIS_URL (or leave blank for local Redis)
 
 # Option A — all-in-one demo (middleware + dashboard, one process)
 npm run start:dashboard
@@ -206,10 +229,41 @@ UPSTREAMS=http://localhost:5001 npm run start:gateway
 docker compose -f docker/docker-compose.yml up --build
 ```
 
-Requires a Redis instance reachable at `REDIS_HOST`/`REDIS_PORT`
-(default `127.0.0.1:6379`).
+Redis connection resolves in this order:
+1. `REDIS_URL` (connection string — use this for a managed Redis like
+   Render Key Value or Redis Cloud, supports `rediss://` for TLS)
+2. `REDIS_HOST` / `REDIS_PORT` (plain host+port, default `127.0.0.1:6379`)
+
+`GET /health` reports `{"redisAvailable": true|false}` — check this first
+whenever something seems off; it's the fastest way to tell "Redis isn't
+connected" apart from "Redis is connected but something else is wrong."
 
 ---
+
+## Deploying (Render)
+
+1. Push this repo to GitHub.
+2. Provision a Redis instance — [Render Key Value](https://render.com) or
+   [Redis Cloud](https://redis.io/cloud) free tier both work. Copy its
+   connection string (`redis://` or `rediss://...`).
+3. Render → New → Web Service → connect the repo.
+   - Runtime: **Docker**
+   - Dockerfile Path: `docker/Dockerfile`
+   - Docker Build Context Directory: `sentinel` (or `.` if this repo's root
+     *is* the `sentinel` folder — check your repo structure)
+4. Environment variables:
+   - `REDIS_URL` — the connection string from step 2
+   - `SENTINEL_DASHBOARD_USER` / `SENTINEL_DASHBOARD_PASS` — protects
+     `/sentinel/dashboard` and `/sentinel/metrics` with Basic Auth (skip
+     these and the dashboard is public — fine for a private demo, not for
+     anything with real traffic)
+5. Create Web Service. Render builds the Docker image and gives you a
+   public URL. Visit `<url>/health` first to confirm `redisAvailable: true`
+   before trusting anything else.
+
+---
+
+
 
 ## API / integration surface
 
