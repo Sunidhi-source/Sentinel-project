@@ -1,5 +1,17 @@
 # 🛡️ Sentinel
 
+![Node.js](https://img.shields.io/badge/Node.js-20-339933?logo=node.js&logoColor=white)
+![Express](https://img.shields.io/badge/Express-4-000000?logo=express&logoColor=white)
+![Redis](https://img.shields.io/badge/Redis-Lua_scripts-DC382D?logo=redis&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white)
+![WebSocket](https://img.shields.io/badge/WebSocket-live_dashboard-black?logo=websocket&logoColor=white)
+![Deployed on Render](https://img.shields.io/badge/Deployed_on-Render-46E3B7?logo=render&logoColor=white)
+
+**Stack:** Node.js + Express (middleware/gateway) · Redis (atomic Lua
+scripts for the rate-limit algorithms) · `ws` (WebSocket stream powering
+the live dashboard) · `prom-client` (Prometheus metrics) · Docker
+(containerized deploy) · deployed on Render, backed by Redis Cloud.
+
 Distributed rate-limiting & API gateway middleware for Node.js. Enforces
 accurate limits **even when your service runs across multiple
 instances/processes**, with atomic Redis Lua checks, sub-few-ms overhead,
